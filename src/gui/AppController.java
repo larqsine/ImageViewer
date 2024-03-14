@@ -33,9 +33,9 @@ public class AppController {
         // Load selected images
         if (selectedFiles != null) {
             for (File file : selectedFiles) {
-                //Add support for multiple images or slideshow
                 Image image = new Image(file.toURI().toString());
                 imageContainer.setImage(image);
+                images.add(image);
             }
         }
     }
