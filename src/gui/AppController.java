@@ -33,9 +33,9 @@ public class AppController {
         // Load selected images
         if (selectedFiles != null) {
             for (File file : selectedFiles) {
+                //Add support for multiple images or slideshow
                 Image image = new Image(file.toURI().toString());
-                ImageView imageView = new ImageView(image);
-                // You can add the ImageView to a container or display it wherever you want in your GUI
+                imageContainer.setImage(image);
             }
         }
     }
