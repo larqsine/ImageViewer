@@ -1,3 +1,4 @@
+import gui.AppController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
@@ -18,6 +19,9 @@ public class Main extends Application {
         scene.getStylesheets().add("gui/main.css");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        AppController controller = loader.getController();
+        controller.Init(primaryStage);
 
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 

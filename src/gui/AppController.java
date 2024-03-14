@@ -2,8 +2,11 @@ package gui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Control;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -14,6 +17,10 @@ import java.util.List;
 public class AppController {
     @FXML
     public ImageView imageContainer;
+    @FXML
+    public BorderPane mainBorderPane;
+
+    private Stage stage;
 
     private int currentIndex = 0;
     private List<Image> images = new ArrayList<>();
@@ -59,4 +66,34 @@ public class AppController {
         imageContainer.setImage(imageToShow);
     }
 
+    public void Init(Stage stage) {
+        this.stage = stage;
+
+        RespondToWidthAndHeightChanges();
+
+        stage.maximizedProperty().addListener((observable, oldValue, newValue) -> RespondToWidthAndHeightChanges());
+        stage.widthProperty().addListener((obs, oldVal, newVal) -> RespondToWidthAndHeightChanges());
+        stage.heightProperty().addListener((obs, oldVal, newVal) -> RespondToWidthAndHeightChanges());
+    }
+
+    private void RespondToWidthAndHeightChanges() {
+        double sceneWidth = stage.getScene().getWidth();
+        setPaneHeight(mainBorderPane, stage.getScene().getHeight());
+        setPaneWidth(mainBorderPane, sceneWidth);
+
+        imageContainer.setFitWidth(stage.getWidth());
+        imageContainer.setFitHeight(stage.getHeight() - 50);
+        imageContainer.setPreserveRatio(true);
+    }
+
+    private void setPaneHeight(Pane pane, double value) {
+        pane.setMinHeight(value);
+        pane.setPrefHeight(value);
+        pane.setMaxHeight(value);
+    }
+    private void setPaneWidth(Pane pane, double value) {
+        pane.setMinWidth(value);
+        pane.setPrefWidth(value);
+        pane.setMaxWidth(value);
+    }
 }
