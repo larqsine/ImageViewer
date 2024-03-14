@@ -1,0 +1,15 @@
+.background {
+    -fx-background-color: #333;
+}
+
+.toolbar {
+    -fx-background-color: #222;
+}
+
+.btn {
+    -fx-background-color: #333;
+    -fx-border-color: #111;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-text-fill: #fff;
+}
