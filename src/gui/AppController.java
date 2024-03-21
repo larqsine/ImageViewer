@@ -1,8 +1,8 @@
 package gui;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Control;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -24,6 +24,8 @@ public class AppController {
 
     private int currentIndex = 0;
     private List<Image> images = new ArrayList<>();
+    private boolean slideshowRunning = false;
+    private Thread slideshowThread;
 
     public void LoadImagesButton(ActionEvent actionEvent) {
         // Create a file chooser
@@ -65,6 +67,22 @@ public class AppController {
         Image imageToShow = images.get(currentIndex);
         imageContainer.setImage(imageToShow);
     }
+    @FXML
+    private void SlideshowButton(ActionEvent actionEvent) {
+        slideshowRunning=true;
+        slideshowThread = new Thread(() -> {
+            while (slideshowRunning) {
+                try {
+                    Thread.sleep(2000); // Display each image for 2 seconds
+                    Platform.runLater(() -> NextButton(actionEvent)); // Go to the next image
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        slideshowThread.setDaemon(true);
+        slideshowThread.start();
+    }
 
     public void Init(Stage stage) {
         this.stage = stage;
@@ -96,4 +114,6 @@ public class AppController {
         pane.setPrefWidth(value);
         pane.setMaxWidth(value);
     }
+
 }
+
