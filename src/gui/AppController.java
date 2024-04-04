@@ -1,8 +1,10 @@
 package gui;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -19,6 +21,8 @@ public class AppController {
     public ImageView imageContainer;
     @FXML
     public BorderPane mainBorderPane;
+    @FXML
+    public TextField filenameTextField;
 
     private Stage stage;
 
@@ -34,28 +38,27 @@ public class AppController {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
         );
-
-        // Show the file chooser dialog
+        
         Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(stage);
 
-        // Load selected images
         if (selectedFiles != null) {
             for (File file : selectedFiles) {
                 Image image = new Image(file.toURI().toString());
-                imageContainer.setImage(image);
                 images.add(image);
             }
         }
     }
+
     public void NextButton(ActionEvent actionEvent) {
         currentIndex++;
         if (currentIndex >= images.size()) {
             currentIndex = 0;
         }
         Image imageToShow = images.get(currentIndex);
-        imageContainer.setImage(imageToShow);
+        updateUI(imageToShow);
     }
+
     public void PreviousButton(ActionEvent actionEvent) {
         currentIndex--;
 
@@ -63,25 +66,29 @@ public class AppController {
             currentIndex = images.size() - 1;
         }
 
-        // Display the image corresponding to the currentIndex
         Image imageToShow = images.get(currentIndex);
-        imageContainer.setImage(imageToShow);
+        updateUI(imageToShow);
     }
-    @FXML
-    private void SlideshowButton(ActionEvent actionEvent) {
-        slideshowRunning=true;
-        slideshowThread = new Thread(() -> {
-            while (slideshowRunning) {
-                try {
-                    Thread.sleep(2000); // Display each image for 2 seconds
-                    Platform.runLater(() -> NextButton(actionEvent)); // Go to the next image
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+
+    public void startSlideshowButton(ActionEvent actionEvent) {
+        slideshowRunning = true;
+        Task<Void> slideshowTask = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                while (slideshowRunning) {
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> NextButton(actionEvent));
                 }
+                return null;
             }
-        });
+        };
+        slideshowThread = new Thread(slideshowTask);
         slideshowThread.setDaemon(true);
         slideshowThread.start();
+    }
+
+    public void stopSlideshowButton(ActionEvent actionEvent) {
+        slideshowRunning = false;
     }
 
     public void Init(Stage stage) {
@@ -109,11 +116,17 @@ public class AppController {
         pane.setPrefHeight(value);
         pane.setMaxHeight(value);
     }
+
     private void setPaneWidth(Pane pane, double value) {
         pane.setMinWidth(value);
         pane.setPrefWidth(value);
         pane.setMaxWidth(value);
     }
 
+    private void updateUI(Image image) {
+        Platform.runLater(() -> {
+            imageContainer.setImage(image);
+            filenameTextField.setText(images.get(currentIndex).getUrl());
+        });
+    }
 }
-
