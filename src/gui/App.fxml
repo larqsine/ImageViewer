@@ -10,12 +10,12 @@
 
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" styleClass="background" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AppController">
     <children>
-        <BorderPane fx:id="mainBorderPane" prefHeight="650.0" prefWidth="730.0" styleClass="background">
+        <BorderPane fx:id="mainBorderPane" layoutY="-8.0" prefHeight="650.0" prefWidth="730.0" styleClass="background">
             <center>
                 <ImageView fx:id="imageContainer" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
             </center>
             <bottom>
-                <BorderPane prefHeight="50.0" prefWidth="200.0" styleClass="toolbar" BorderPane.alignment="CENTER">
+                <BorderPane prefHeight="100.0" prefWidth="730.0" styleClass="toolbar" BorderPane.alignment="CENTER">
                     <left>
                         <Button mnemonicParsing="false" onAction="#LoadImagesButton" styleClass="btn" text="Load images..." BorderPane.alignment="CENTER" />
                     </left>
@@ -34,7 +34,16 @@
                     </padding>
                <center>
                   <TextField fx:id="filenameTextField" editable="false" prefHeight="25.0" prefWidth="250.0" styleClass="btn" BorderPane.alignment="CENTER" />
-               </center></BorderPane>
+               </center>
+               <bottom>
+                  <HBox alignment="CENTER" prefHeight="30.0" prefWidth="710.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <TextField id="redtxt" fx:id="redCountTextField" stylesheets="@main.css" />
+                        <TextField id="greentxt" fx:id="greenCountTextField" stylesheets="@main.css" />
+                        <TextField id="bluetxt" fx:id="blueCountTextField" stylesheets="@main.css" />
+                     </children>
+                  </HBox>
+               </bottom></BorderPane>
             </bottom></BorderPane>
     </children>
 </AnchorPane>

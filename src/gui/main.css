@@ -13,3 +13,16 @@
     -fx-background-radius: 5px;
     -fx-text-fill: #fff;
 }
+
+#redtxt {
+    -fx-background-color:#944545;
+    -fx-text-fill: white;
+}
+#greentxt{
+    -fx-background-color:#4e763d;
+    -fx-text-fill: white;
+}
+#bluetxt{
+    -fx-background-color:#0e4a81;
+    -fx-text-fill: white;
+}

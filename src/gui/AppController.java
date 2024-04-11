@@ -11,10 +11,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.scene.paint.Color;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class AppController {
     @FXML
@@ -23,8 +26,15 @@ public class AppController {
     public BorderPane mainBorderPane;
     @FXML
     public TextField filenameTextField;
+    @FXML
+    public TextField redCountTextField;
+    @FXML
+    public TextField greenCountTextField;
+    @FXML
+    public TextField blueCountTextField;
 
     private Stage stage;
+    private ExecutorService executorService;
 
     private int currentIndex = 0;
     private List<Image> images = new ArrayList<>();
@@ -38,7 +48,7 @@ public class AppController {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
         );
-        
+
         Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(stage);
 
@@ -93,6 +103,7 @@ public class AppController {
 
     public void Init(Stage stage) {
         this.stage = stage;
+        this.executorService = Executors.newSingleThreadExecutor();
 
         RespondToWidthAndHeightChanges();
 
@@ -124,9 +135,41 @@ public class AppController {
     }
 
     private void updateUI(Image image) {
-        Platform.runLater(() -> {
-            imageContainer.setImage(image);
-            filenameTextField.setText(images.get(currentIndex).getUrl());
+        executorService.submit(() -> {
+            CountColors(image);
+            Platform.runLater(() -> {
+                imageContainer.setImage(image);
+                filenameTextField.setText(images.get(currentIndex).getUrl());
+            });
+        });
+    }
+
+    private void CountColors(Image image) {
+        executorService.submit(() -> {
+            int redCount = 0;
+            int greenCount = 0;
+            int blueCount = 0;
+
+            for (int y = 0; y < image.getHeight(); y++) {
+                for (int x = 0; x < image.getWidth(); x++) {
+                    javafx.scene.paint.Color color = image.getPixelReader().getColor(x, y);
+                    if (color.getRed() > color.getGreen() && color.getRed() > color.getBlue()) {
+                        redCount++;
+                    } else if (color.getGreen() > color.getRed() && color.getGreen() > color.getBlue()) {
+                        greenCount++;
+                    } else if (color.getBlue() > color.getRed() && color.getBlue() > color.getGreen()) {
+                        blueCount++;
+                    }
+                }
+            }
+            int finalRedCount = redCount;
+            int finalGreenCount = greenCount;
+            int finalBlueCount = blueCount;
+            Platform.runLater(() -> {
+                redCountTextField.setText(String.valueOf(finalRedCount));
+                greenCountTextField.setText(String.valueOf(finalGreenCount));
+                blueCountTextField.setText(String.valueOf(finalBlueCount));
+            });
         });
     }
 }
