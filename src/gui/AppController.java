@@ -42,7 +42,10 @@ public class AppController {
     private Thread slideshowThread;
 
     public void LoadImagesButton(ActionEvent actionEvent) {
-        // Create a file chooser
+
+        //We have imported free images from Google to the data folder within this project.
+        //Feel free to copy path and use them :)
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose Image Files");
         fileChooser.getExtensionFilters().addAll(
@@ -152,7 +155,7 @@ public class AppController {
 
             for (int y = 0; y < image.getHeight(); y++) {
                 for (int x = 0; x < image.getWidth(); x++) {
-                    javafx.scene.paint.Color color = image.getPixelReader().getColor(x, y);
+                    Color color = image.getPixelReader().getColor(x, y);
                     if (color.getRed() > color.getGreen() && color.getRed() > color.getBlue()) {
                         redCount++;
                     } else if (color.getGreen() > color.getRed() && color.getGreen() > color.getBlue()) {
